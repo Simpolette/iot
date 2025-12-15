@@ -16,6 +16,7 @@ import { MqttService } from './mqtt/mqtt.service';
 import { SettingService } from './settingPage/setting.service';
 import { SettingController } from './settingPage/setting.controller';
 import { SettingModule } from './settingPage/setting.module';
+import { PushsaferModule } from './pushsafer/pushsafer.module';
 
 @Module({
   imports: [
@@ -26,9 +27,10 @@ import { SettingModule } from './settingPage/setting.module';
     // TelegramModule, // Vô hiệu hóa telegram
     MqttModule,
     SettingModule,
+    PushsaferModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env']
+      envFilePath: ['.env'],
     }),
 
     MongooseModule.forRootAsync({
@@ -65,7 +67,6 @@ import { SettingModule } from './settingPage/setting.module';
         },
       }),
       inject: [ConfigService],
-
     }),
   ],
   controllers: [AppController, MqttService],
@@ -78,4 +79,4 @@ import { SettingModule } from './settingPage/setting.module';
     MqttService,
   ],
 })
-export class AppModule { }
+export class AppModule {}
