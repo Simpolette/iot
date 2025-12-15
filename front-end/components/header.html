@@ -1,0 +1,31 @@
+  <section class="hero">
+    <!-- Navbar -->
+    <header class="navbar">
+      <div class="logo">
+        <a href="#" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
+          <img src="../assets/images/logo.svg" style="width: 32px; margin-right: 4px;" alt="Logo" />
+          <span>FireGuard</span>
+        </a>
+      </div>
+      <nav>
+        <a href="../pages/dashboard.html">Overview</a>
+        <a href="../pages/setting.html">Setting</a>
+      </nav>
+      <div class="auth">
+        <div class="profile-container" onclick="toggleDropdown()">
+          <a href="#">
+            <img src="../assets/images/ava.jpg" style="width: 30px; border-radius: 50%;" alt="Profile" />
+            Name <span class="arrow">&#9662;</span>
+          </a>
+          <div id="dropdown" class="profile-dropdown">
+            <a href="../pages/profile.html">
+              <i class="fas fa-user"></i> Profile
+            </a>
+            <a href="#" id="logout-btn">
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+  </section>

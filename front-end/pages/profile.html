@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="../assets/images/logo.svg" type="image/svg+xml">
+  <title>Trang cá nhân - SmartDry</title>
+  <link rel="stylesheet" href="../css/pages/smart-rack-profile-simple.css?v=4.0" />
+  <link rel="stylesheet" href="../css/components/header.css?v=2.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="../js/main.js"></script>
+
+  <script type="module">
+    import { redirectIfNotLoggedIn } from "../js/auth-check.js";
+    redirectIfNotLoggedIn();
+  </script>
+
+  <style>
+    body {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="header-placeholder"></div>
+
+  <!-- Main content -->
+  <div class="main-container">
+    <div class="page-header">
+      <h1><i class="fas fa-user-circle"></i> Trang cá nhân</h1>
+      <p>Quản lý thông tin tài khoản</p>
+    </div>
+
+    <div class="profile-layout">
+      <!-- Profile Card -->
+      <div class="profile-card-main">
+        <div class="profile-avatar-section">
+          <div class="profile-avatar">
+            <img src="../assets/images/default-avatar.png" alt="Avatar" id="avatarImage"
+              onerror="this.src='https://ui-avatars.com/api/?name=User&background=4F46E5&color=fff&size=150'">
+            <button class="avatar-upload" onclick="document.getElementById('avatarInput').click()">
+              <i class="fas fa-camera"></i>
+            </button>
+            <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="uploadAvatar(event)">
+          </div>
+          <h2 id="userName">--</h2>
+          <p class="user-email" id="userEmail">--</p>
+        </div>
+
+        <!-- Info Section -->
+        <div class="content-section">
+          <div class="section-header">
+            <h2><i class="fas fa-user-edit"></i> Thông tin cá nhân</h2>
+            <button class="btn btn-outline" id="editBtn" onclick="toggleEdit()">
+              <i class="fas fa-edit"></i>
+              Chỉnh sửa
+            </button>
+          </div>
+
+          <form id="profileForm" class="profile-form">
+            <div class="form-group">
+              <label for="fullName">
+                <i class="fas fa-user"></i>
+                Họ và tên
+              </label>
+              <input type="text" id="fullName" class="input-field" disabled>
+            </div>
+
+            <div class="form-group">
+              <label for="email">
+                <i class="fas fa-envelope"></i>
+                Email
+              </label>
+              <input type="email" id="email" class="input-field" disabled>
+            </div>
+
+            <div class="form-group">
+              <label for="phone">
+                <i class="fas fa-phone"></i>
+                Số điện thoại
+              </label>
+              <input type="tel" id="phone" class="input-field" disabled placeholder="Chưa cập nhật">
+            </div>
+
+            <div class="form-actions" id="formActions" style="display: none;">
+              <button type="button" class="btn btn-secondary" onclick="cancelEdit()">
+                <i class="fas fa-times"></i>
+                Hủy
+              </button>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i>
+                Lưu thay đổi
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Change Password Section -->
+        <div class="content-section">
+          <div class="section-header">
+            <h2><i class="fas fa-lock"></i> Đổi mật khẩu</h2>
+          </div>
+
+          <form id="changePasswordForm" class="profile-form">
+            <div class="form-group">
+              <label for="currentPassword">
+                <i class="fas fa-lock"></i>
+                Mật khẩu hiện tại
+              </label>
+              <input type="password" id="currentPassword" class="input-field" placeholder="Nhập mật khẩu hiện tại">
+            </div>
+
+            <div class="form-group">
+              <label for="newPassword">
+                <i class="fas fa-key"></i>
+                Mật khẩu mới
+              </label>
+              <input type="password" id="newPassword" class="input-field"
+                placeholder="Nhập mật khẩu mới (tối thiểu 6 ký tự)">
+            </div>
+
+            <div class="form-group">
+              <label for="confirmPassword">
+                <i class="fas fa-check-circle"></i>
+                Xác nhận mật khẩu
+              </label>
+              <input type="password" id="confirmPassword" class="input-field" placeholder="Nhập lại mật khẩu mới">
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i>
+              Đổi mật khẩu
+            </button>
+          </form>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="content-section">
+          <div class="section-header">
+            <h2><i class="fas fa-bolt"></i> Thao tác nhanh</h2>
+          </div>
+
+          <div class="quick-actions">
+            <a href="dashboard.html" class="quick-link">
+              <i class="fas fa-tachometer-alt"></i>
+              Dashboard
+            </a>
+            <a href="setting.html" class="quick-link">
+              <i class="fas fa-cog"></i>
+              Cài đặt
+            </a>
+            <a href="#" class="quick-link logout-link" onclick="logout()">
+              <i class="fas fa-sign-out-alt"></i>
+              Đăng xuất
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading overlay -->
+  <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+    <div class="spinner"></div>
+    <p>Đang xử lý...</p>
+  </div>
+
+  <!-- Toast notification -->
+  <div id="toast" class="toast"></div>
+
+  <script src="../js/create.chatbot.js"></script>
+  <script src="../js/pages/smart-rack-profile-simple.js"></script>
+</body>
+
+</html>

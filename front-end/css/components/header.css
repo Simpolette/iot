@@ -1,0 +1,80 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 50px;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.logo img {
+  width: 56px;
+  margin-right: 4px;
+}
+
+.navbar nav a,
+.auth a {
+  margin: 0 10px;
+  text-decoration: none;
+  color: black;
+}
+
+/* Profile dropdown */
+.profile-container {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.profile-container a {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+  color: #333;
+}
+
+.arrow {
+  font-size: 1em;
+  transition: transform 0.3s ease;
+}
+
+.profile-container.open .arrow {
+  transform: rotate(180deg);
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  z-index: 10;
+  display: none;
+  min-width: 150px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.profile-dropdown a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 15px;
+  text-decoration: none;
+  color: #333;
+}
+
+.profile-dropdown a:hover {
+  background-color: #f2f2f2;
+}

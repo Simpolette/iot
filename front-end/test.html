@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API - SmartDry</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #6366f1;
+            margin-bottom: 10px;
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+        }
+
+        h2 {
+            color: #1f2937;
+            margin-bottom: 15px;
+            font-size: 1.25rem;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+
+        .result {
+            background: #f3f4f6;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .loader {
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #6366f1;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .links a {
+            background: #f3f4f6;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #1f2937;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .links a:hover {
+            background: #e5e7eb;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🧪 Test API - SmartDry</h1>
+        <p style="color: #6b7280; margin-bottom: 20px;">Kiểm tra kết nối và chức năng API</p>
+
+        <div id="serverStatus" class="status">
+            <div class="loader" id="loader"></div>
+            <span id="statusText">Đang kiểm tra server...</span>
+        </div>
+
+        <!-- Test 1: Server Health -->
+        <div class="test-section">
+            <h2>1️⃣ Kiểm tra Server</h2>
+            <button onclick="testServer()">Test Server</button>
+            <div id="serverResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Test 2: Email Service -->
+        <div class="test-section">
+            <h2>2️⃣ Test Email Service</h2>
+            <p style="color: #6b7280; margin-bottom: 10px;">Gửi email test và nhận mã OTP</p>
+            <button onclick="testEmail()">Gửi Email Test</button>
+            <div id="emailResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Test 3: Register -->
+        <div class="test-section">
+            <h2>3️⃣ Đăng ký tài khoản</h2>
+            <input type="text" id="regName" placeholder="Họ và tên">
+            <input type="email" id="regEmail" placeholder="Email">
+            <input type="password" id="regPassword" placeholder="Mật khẩu">
+            <button onclick="testRegister()">Đăng ký</button>
+            <div id="registerResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Test 4: Verify -->
+        <div class="test-section">
+            <h2>4️⃣ Xác thực OTP</h2>
+            <input type="email" id="verifyEmail" placeholder="Email đã đăng ký">
+            <input type="text" id="verifyCode" placeholder="Mã OTP 6 số">
+            <button onclick="testVerify()">Xác thực</button>
+            <div id="verifyResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Test 5: Login -->
+        <div class="test-section">
+            <h2>5️⃣ Đăng nhập</h2>
+            <input type="email" id="loginEmail" placeholder="Email">
+            <input type="password" id="loginPassword" placeholder="Mật khẩu">
+            <button onclick="testLogin()">Đăng nhập</button>
+            <div id="loginResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="links">
+            <a href="pages/index.html">🏠 Trang chủ</a>
+            <a href="pages/signup.html">📝 Đăng ký</a>
+            <a href="pages/login.html">🔐 Đăng nhập</a>
+            <a href="pages/dashboard.html">📊 Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8080/api';
+
+        // Auto check server on load
+        window.addEventListener('load', async () => {
+            const loader = document.getElementById('loader');
+            const statusDiv = document.getElementById('serverStatus');
+            const statusText = document.getElementById('statusText');
+
+            loader.style.display = 'block';
+
+            try {
+                const response = await fetch(`${API_URL}`);
+                if (response.ok) {
+                    statusDiv.className = 'status success';
+                    statusText.textContent = '✅ Server đang chạy tốt!';
+                }
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusText.textContent = '❌ Không thể kết nối đến server. Vui lòng chạy: cd back-end && npm run dev';
+            } finally {
+                loader.style.display = 'none';
+            }
+        });
+
+        async function testServer() {
+            const resultDiv = document.getElementById('serverResult');
+            try {
+                const response = await fetch(`${API_URL}`);
+                const data = await response.text();
+                resultDiv.textContent = `Status: ${response.status}\\nResponse: ${data}`;
+                resultDiv.style.display = 'block';
+            } catch (error) {
+                resultDiv.textContent = `Error: ${error.message}`;
+                resultDiv.style.display = 'block';
+            }
+        }
+
+        async function testEmail() {
+            const resultDiv = document.getElementById('emailResult');
+            try {
+                const response = await fetch(`${API_URL}/auth/mail`);
+                const data = await response.json();
+                resultDiv.textContent = `✅ Email sent!\\n\\nMã OTP test: ${data.code}\\n\\nKiểm tra email của bạn!`;
+                resultDiv.style.display = 'block';
+            } catch (error) {
+                resultDiv.textContent = `Error: ${error.message}`;
+                resultDiv.style.display = 'block';
+            }
+        }
+
+        async function testRegister() {
+            const resultDiv = document.getElementById('registerResult');
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+
+            if (!name || !email || !password) {
+                resultDiv.textContent = '⚠️ Vui lòng điền đầy đủ thông tin';
+                resultDiv.style.display = 'block';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.textContent = `✅ Đăng ký thành công!\\n\\nUser ID: ${data._id}\\nEmail: ${data.email}\\n\\n📧 Kiểm tra email để lấy mã OTP!`;
+                    document.getElementById('verifyEmail').value = email;
+                } else {
+                    resultDiv.textContent = `❌ Lỗi: ${data.message}`;
+                }
+                resultDiv.style.display = 'block';
+            } catch (error) {
+                resultDiv.textContent = `Error: ${error.message}`;
+                resultDiv.style.display = 'block';
+            }
+        }
+
+        async function testVerify() {
+            const resultDiv = document.getElementById('verifyResult');
+            const email = document.getElementById('verifyEmail').value;
+            const code = document.getElementById('verifyCode').value;
+
+            if (!email || !code) {
+                resultDiv.textContent = '⚠️ Vui lòng nhập email và mã OTP';
+                resultDiv.style.display = 'block';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/auth/verify`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, code })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.textContent = `✅ Xác thực thành công!\\n\\n${data.message}\\n\\nBạn có thể đăng nhập ngay!`;
+                    document.getElementById('loginEmail').value = email;
+                } else {
+                    resultDiv.textContent = `❌ Lỗi: ${data.message}`;
+                }
+                resultDiv.style.display = 'block';
+            } catch (error) {
+                resultDiv.textContent = `Error: ${error.message}`;
+                resultDiv.style.display = 'block';
+            }
+        }
+
+        async function testLogin() {
+            const resultDiv = document.getElementById('loginResult');
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                resultDiv.textContent = '⚠️ Vui lòng nhập email và mật khẩu';
+                resultDiv.style.display = 'block';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('token', data.accessToken);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    resultDiv.textContent = `✅ Đăng nhập thành công!\\n\\nToken: ${data.accessToken.substring(0, 50)}...\\n\\nUser: ${JSON.stringify(data.user, null, 2)}\\n\\nĐã lưu vào localStorage!`;
+                } else {
+                    resultDiv.textContent = `❌ Lỗi: ${data.message}`;
+                }
+                resultDiv.style.display = 'block';
+            } catch (error) {
+                resultDiv.textContent = `Error: ${error.message}`;
+                resultDiv.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+
+</html>

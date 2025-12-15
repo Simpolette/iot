@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>SmartDry - Cảnh báo Giàn Phơi</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body
+    style="margin: 0; padding: 0; min-width: 100%; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.5; background-color: #FAFAFA; color: #222222;">
+    <div style="max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 6px; overflow: hidden;">
+        <div style="background-color: #3498db; padding: 24px; color: #ffffff; text-align: center;">
+            <h1 style="font-size: 24px; font-weight: 700; margin: 0;">🌧️ SmartDry - Cảnh báo Giàn Phơi</h1>
+        </div>
+
+        <div style="padding: 24px; background-color: #ffffff;">
+            <p>Xin chào <strong>{{email}}</strong>,</p>
+            <p>Hệ thống giàn phơi thông minh của bạn đã phát hiện <strong>các điều kiện bất thường</strong> với thông số như sau:</p>
+
+            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                <thead>
+                    <tr style="background-color: #ecf0f1;">
+                        <th style="text-align: left; padding: 12px; border-bottom: 2px solid #3498db;">Thông số</th>
+                        <th style="text-align: right; padding: 12px; border-bottom: 2px solid #3498db;">Giá trị hiện tại</th>
+                        <th style="text-align: right; padding: 12px; border-bottom: 2px solid #3498db;">Ngưỡng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">🌡️ Nhiệt độ</td>
+                        <td style="padding: 10px; text-align: right; border-bottom: 1px solid #eee; {{#if tempAlert}}color: #e74c3c; font-weight: bold;{{/if}}">{{temperature}}°C</td>
+                        <td style="padding: 10px; text-align: right; border-bottom: 1px solid #eee;">{{thresholds.autoCloseTemperature}}°C</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">💧 Độ ẩm</td>
+                        <td style="padding: 10px; text-align: right; border-bottom: 1px solid #eee; {{#if humidAlert}}color: #e74c3c; font-weight: bold;{{/if}}">{{humidity}}%</td>
+                        <td style="padding: 10px; text-align: right; border-bottom: 1px solid #eee;">{{thresholds.autoCloseHumidity}}%</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">☀️ Ánh sáng</td>
+                        <td style="padding: 10px; text-align: right; border-bottom: 1px solid #eee; {{#if lightAlert}}color: #f39c12; font-weight: bold;{{/if}}">{{light}} lux</td>
+                        <td style="padding: 10px; text-align: right; border-bottom: 1px solid #eee;">{{thresholds.minLightLevel}} lux</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">🌧️ Cảm biến mưa</td>
+                        <td style="padding: 10px; text-align: right; border-bottom: 1px solid #eee; {{#if rainAlert}}color: #e74c3c; font-weight: bold;{{/if}}">{{#if rainSensor}}Có mưa{{else}}Không mưa{{/if}}</td>
+                        <td style="padding: 10px; text-align: right; border-bottom: 1px solid #eee;">{{#if thresholds.autoCloseOnRain}}Tự động{{else}}Thủ công{{/if}}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px;">🎚️ Trạng thái giàn</td>
+                        <td style="padding: 10px; text-align: right; font-weight: bold; color: #3498db;" colspan="2">
+                            {{#if rackOpen}}Đã mở{{/if}}
+                            {{#if rackClosed}}Đã đóng{{/if}}
+                            {{#if rackOpening}}Đang mở...{{/if}}
+                            {{#if rackClosing}}Đang đóng...{{/if}}
+                            ({{rackPosition}}%)
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="background-color: #fff3cd; border-left: 4px solid #f39c12; padding: 15px; margin: 20px 0;">
+                <p style="margin: 0 0 10px 0; font-weight: bold; color: #856404;">⚠️ Cảnh báo:</p>
+                <ul style="margin: 0; padding-left: 20px; color: #856404;">
+                    {{#if rainAlert}}<li>🌧️ <strong>Phát hiện mưa</strong> - Giàn phơi đã được đóng tự động</li>{{/if}}
+                    {{#if tempAlert}}<li>🌡️ Nhiệt độ cao ({{temperature}}°C > {{thresholds.autoCloseTemperature}}°C)</li>{{/if}}
+                    {{#if humidAlert}}<li>💧 Độ ẩm cao ({{humidity}}% > {{thresholds.autoCloseHumidity}}%)</li>{{/if}}
+                    {{#if lightAlert}}<li>🌙 Ánh sáng thấp ({{light}} lux < {{thresholds.minLightLevel}} lux)</li>{{/if}}
+                    {{#unless rainAlert}}
+                    {{#unless tempAlert}}
+                    {{#unless humidAlert}}
+                    {{#unless lightAlert}}
+                    <li>✅ Tất cả thông số đều trong giới hạn bình thường</li>
+                    {{/unless}}
+                    {{/unless}}
+                    {{/unless}}
+                    {{/unless}}
+                </ul>
+            </div>
+
+            <div style="background-color: #d1ecf1; border-left: 4px solid #17a2b8; padding: 15px; margin: 20px 0;">
+                <p style="margin: 0; color: #0c5460;">
+                    💡 <strong>Khuyến nghị:</strong> Kiểm tra và điều chỉnh cài đặt tự động trong ứng dụng nếu cần thiết.
+                    Giàn phơi sẽ tự động mở lại khi điều kiện thời tiết thuận lợi.
+                </p>
+            </div>
+
+            <p>Bạn có thể xem chi tiết và điều khiển giàn phơi qua ứng dụng SmartDry.</p>
+        </div>
+
+        <div style="background-color: #f6f6f6; padding: 24px; font-size: 14px; color: #666;">
+            <p>Nếu bạn có thắc mắc hoặc cần hỗ trợ, vui lòng liên hệ <a href="mailto:smartdry.support@gmail.com"
+                    style="color: #3498db; text-decoration: none;">smartdry.support@gmail.com</a>.</p>
+            <p style="font-size: 12px; color: #999; text-align: center; margin: 10px 0 0 0;">SmartDry - Giàn Phơi Thông Minh © 2025</p>
+        </div>
+    </div>
+</body>
+
+</html>

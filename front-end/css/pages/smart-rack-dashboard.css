@@ -1,0 +1,66 @@
+/* Smart Rack Dashboard Styles */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --primary: #6366f1; --secondary: #8b5cf6; --success: #10b981; --danger: #ef4444;
+  --warning: #f59e0b; --dark: #1f2937; --gray: #6b7280; --light-gray: #f3f4f6;
+  --white: #fff; --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+body { font-family: 'Segoe UI', sans-serif; background: var(--light-gray); }
+.main-container { max-width: 1400px; margin: 80px auto 40px; padding: 0 20px; }
+.page-header { background: var(--white); padding: 2rem; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; }
+.page-header h1 { font-size: 2rem; display: flex; align-items: center; gap: 0.5rem; }
+.page-header h1 i { color: var(--primary); }
+.header-actions { display: flex; gap: 1rem; align-items: center; }
+.btn { padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+.btn-refresh { background: var(--gradient); color: white; }
+.btn:hover { transform: translateY(-2px); }
+.last-update { color: var(--gray); font-size: 0.9rem; }
+
+.status-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+.status-card { background: var(--white); padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid var(--primary); transition: all 0.3s; }
+.status-card:hover { transform: translateY(-4px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.status-card .card-icon { font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; }
+.status-card h3 { font-size: 0.9rem; color: var(--gray); margin-bottom: 0.5rem; text-transform: uppercase; }
+.status-card .status-value { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+.status-card .status-label { color: var(--gray); font-size: 0.9rem; }
+
+.charts-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+.chart-container { background: var(--white); padding: 2rem; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+.chart-container h2 { margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+.chart-container canvas { max-height: 300px; }
+
+.control-panel { background: var(--white); padding: 2rem; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 2rem; }
+.control-panel h2 { margin-bottom: 1.5rem; }
+.mode-toggle { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+.switch { position: relative; width: 60px; height: 34px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.switch-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #ccc; border-radius: 34px; transition: 0.4s; }
+.switch-slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background: white; border-radius: 50%; transition: 0.4s; }
+input:checked + .switch-slider { background: var(--success); }
+input:checked + .switch-slider:before { transform: translateX(26px); }
+
+.quick-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+.quick-action-btn { padding: 1rem; background: var(--gradient); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+.quick-action-btn:hover { transform: scale(1.05); }
+
+.activity-log { background: var(--white); padding: 2rem; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+.activity-log h2 { margin-bottom: 1.5rem; }
+.activity-log table { width: 100%; border-collapse: collapse; }
+.activity-log th { text-align: left; padding: 1rem; background: var(--light-gray); font-weight: 600; }
+.activity-log td { padding: 1rem; border-bottom: 1px solid var(--light-gray); }
+.badge { padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.85rem; font-weight: 600; }
+.badge-auto { background: #dbeafe; color: #1e40af; }
+.badge-manual { background: #fef3c7; color: #92400e; }
+.badge-alert { background: #fee2e2; color: #991b1b; }
+
+.toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--dark); color: white; padding: 1rem 1.5rem; border-radius: 8px; opacity: 0; transition: all 0.3s; z-index: 1000; }
+.toast.show { opacity: 1; }
+.toast.success { background: var(--success); }
+
+@media (max-width: 768px) {
+  .charts-grid { grid-template-columns: 1fr; }
+  .status-cards { grid-template-columns: 1fr; }
+  .quick-actions { grid-template-columns: 1fr; }
+}
