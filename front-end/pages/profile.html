@@ -18,7 +18,12 @@
 
   <style>
     body {
-      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    body.loaded {
+      opacity: 1;
     }
   </style>
 </head>
@@ -40,10 +45,6 @@
           <div class="profile-avatar">
             <img src="../assets/images/default-avatar.png" alt="Avatar" id="avatarImage"
               onerror="this.src='https://ui-avatars.com/api/?name=User&background=4F46E5&color=fff&size=150'">
-            <button class="avatar-upload" onclick="document.getElementById('avatarInput').click()">
-              <i class="fas fa-camera"></i>
-            </button>
-            <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="uploadAvatar(event)">
           </div>
           <h2 id="userName">--</h2>
           <p class="user-email" id="userEmail">--</p>
@@ -170,7 +171,7 @@
   <!-- Toast notification -->
   <div id="toast" class="toast"></div>
 
-  <script src="../js/create.chatbot.js"></script>
+  <script src="../js/inject-chatbot-widget.js"></script>
   <script src="../js/pages/smart-rack-profile-simple.js"></script>
 </body>
 

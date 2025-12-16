@@ -40,8 +40,8 @@ async function bootstrap() {
 
   await app.startAllMicroservices().then(() => {
     console.log('✅ MQTT microservice is running');
-    console.log('📡 Subscribed to topics: smartdry/data');
-    console.log('📤 Publishing to topics: smartdry/config, smartdry/control');
+    console.log('📡 Subscribed to topics: sensor/status');
+    console.log('📤 Publishing to topics: device/control');
   });
   
   await app.listen(process.env.PORT ?? 8080);

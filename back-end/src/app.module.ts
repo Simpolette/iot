@@ -16,6 +16,7 @@ import { MqttService } from './mqtt/mqtt.service';
 import { SettingService } from './settingPage/setting.service';
 import { SettingController } from './settingPage/setting.controller';
 import { SettingModule } from './settingPage/setting.module';
+import { ActiveUserController } from './controllers/active-user.controller';
 
 @Module({
   imports: [
@@ -68,7 +69,7 @@ import { SettingModule } from './settingPage/setting.module';
 
     }),
   ],
-  controllers: [AppController, MqttService],
+  controllers: [AppController, MqttService, ActiveUserController],
   providers: [
     AppService,
     {

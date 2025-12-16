@@ -4,9 +4,11 @@ import { In4ArduinoModule } from '../modules/in4_arduino/in4_arduino.module';
 import { SettingModule } from 'src/settingPage/setting.module';
 // import { TelegramModule } from 'src/telegram/telegram.module'; // Vô hiệu hóa telegram
 import { UsersModule } from 'src/modules/users/users.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [In4ArduinoModule, SettingModule, UsersModule], // Loại bỏ TelegramModule
+  imports: [In4ArduinoModule, SettingModule, UsersModule, AuthModule], // Thêm AuthModule để inject ActiveUserService
   providers: [MqttService],
 })
 export class MqttModule {}
+  

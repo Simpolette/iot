@@ -2,8 +2,13 @@
 const API_URL = 'http://localhost:8080/api';
 
 document.addEventListener('DOMContentLoaded', function() {
-  document.body.style.display = 'block';
+  // Wait for CSS to load
+  requestAnimationFrame(() => {
+    document.body.classList.add('loaded');
+  });
   loadSettings();
+  // Initialize auto mode visibility
+  toggleAutoMode();
 });
 
 function switchTab(tabName) {
@@ -24,6 +29,17 @@ function switchTab(tabName) {
 
 function updateValue(sensor, value) {
   document.getElementById(`${sensor}Value`).textContent = value;
+}
+
+function toggleAutoMode() {
+  const autoModeEnabled = document.getElementById('autoModeEnabled').checked;
+  const autoModeSettings = document.getElementById('autoModeSettings');
+  
+  if (autoModeEnabled) {
+    autoModeSettings.style.display = 'block';
+  } else {
+    autoModeSettings.style.display = 'none';
+  }
 }
 
 async function loadSettings() {
@@ -57,20 +73,27 @@ async function loadSettings() {
       if (settings.autoCloseOnRain !== undefined) {
         document.getElementById('rainEnabled').checked = settings.autoCloseOnRain;
       }
+      if (settings.autoModeEnabled !== undefined) {
+        document.getElementById('autoModeEnabled').checked = settings.autoModeEnabled;
+        toggleAutoMode();
+      }
     }
   } catch (error) {
     console.error('Error loading settings:', error);
   }
 }
 
-async function saveSensorSettings() {
+async function saveCustomizeSettings() {
   const token = localStorage.getItem('token');
   
   const settings = {
+    autoModeEnabled: document.getElementById('autoModeEnabled').checked,
     autoCloseTemperature: parseInt(document.getElementById('tempThreshold').value),
     autoCloseHumidity: parseInt(document.getElementById('humidityThreshold').value),
     minLightLevel: parseInt(document.getElementById('lightThreshold').value),
-    autoCloseOnRain: document.getElementById('rainEnabled').checked
+    autoCloseOnRain: document.getElementById('rainEnabled').checked,
+    tempEnabled: document.getElementById('tempEnabled').checked,
+    nightRetract: document.getElementById('nightRetract').checked
   };
   
   showLoading(true);
@@ -100,14 +123,14 @@ async function saveSensorSettings() {
 
 function resetToDefault() {
   if (confirm('Bạn có chắc muốn đặt lại về cài đặt mặc định?')) {
-    document.getElementById('rainThreshold').value = 40;
-    updateValue('rain', 40);
     document.getElementById('tempThreshold').value = 35;
     updateValue('temp', 35);
     document.getElementById('humidityThreshold').value = 80;
     updateValue('humidity', 80);
     document.getElementById('lightThreshold').value = 200;
     updateValue('light', 200);
+    document.getElementById('autoModeEnabled').checked = true;
+    toggleAutoMode();
     
     showToast('Đã đặt lại về mặc định!', 'success');
   }

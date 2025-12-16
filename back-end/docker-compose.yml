@@ -1,15 +1,8 @@
+
+
+version: '3.8'
+
 services:
-  mongodb:
-    image: mongo:latest
-    container_name: mongodb
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: npt102
-      MONGO_INITDB_ROOT_PASSWORD: 102219
-    ports:
-      - "27017:27017"
-    volumes:
-      - ./data/mongodb:/data/db
+ 
+  
 volumes:
-  mongodb_data_container:
-    driver: local

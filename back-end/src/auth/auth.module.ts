@@ -9,10 +9,14 @@ import { Passport } from 'passport';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './passport/local.strategy';
 import { JwtStrategy } from './passport/jwt.strategy';
+import { ActiveUserService } from '../services/active-user.service';
+import { MongooseModule } from '@nestjs/mongoose';
+import { in4_arduino, in4_arduinoSchema } from '../modules/in4_arduino/schema/in4_arduino.schema';
 
 @Module({
   imports: [
     UsersModule,
+    MongooseModule.forFeature([{ name: in4_arduino.name, schema: in4_arduinoSchema }]),
     JwtModule.registerAsync({
       useFactory: async (configService: ConfigService) => ({
         global: true,
@@ -26,6 +30,7 @@ import { JwtStrategy } from './passport/jwt.strategy';
     PassportModule
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, ActiveUserService],
+  exports: [ActiveUserService],
 })
 export class AuthModule { }

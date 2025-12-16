@@ -31,7 +31,7 @@ export class In4ArduinoService {
     }).exec();
   }
 
-  async save(dto: { temperature: number; humidity: number; light: number; rainSensor: boolean; rackStatus: string; rackPosition?: number; email?: string }) {
+  async save(dto: { temperature: number; humidity: number; light: number; rainSensor: boolean; rackStatus: string; email?: string }) {
     return await this.in4ArduinoModel.create(dto);
   }
 
