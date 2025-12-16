@@ -14,11 +14,13 @@ import { ActiveUserService } from '../services/active-user.service';
 class EspConfigDto {
     ssid?: string;
     pass?: string;
-    autoCloseTemp?: number;        // Nhiệt độ tự động đóng
-    autoCloseHumid?: number;       // Độ ẩm tự động đóng
-    minLight?: number;             // Mức ánh sáng tối thiểu
-    autoRain?: boolean;            // Tự động đóng khi mưa
-    action?: string;               // Lệnh điều khiển: 'open', 'close', 'auto'
+    autoMode?: boolean;            // Bật/tắt chế độ tự động
+    useHumidity?: boolean;         // Sử dụng độ ẩm cho tự động
+    autoCloseHumid?: number;       // Ngưỡng độ ẩm tự động đóng
+    useRain?: boolean;             // Sử dụng cảm biến mưa cho tự động
+    nightRetract?: boolean;        // Tự động thu vào ban đêm
+    buzzer?: boolean;              // Bật/tắt buzzer
+    action?: string;               // Lệnh điều khiển: 'OPEN', 'CLOSE', 'STOP'
 }
 
 @Controller()
@@ -122,25 +124,20 @@ export class MqttService {
             const userSettings = settings[0];
             const alerts: string[] = [];
 
-            // Kiểm tra điều kiện cảnh báo
-            if (parsedData.rainSensor && userSettings.autoCloseOnRain) {
-                alerts.push("🌧️ Phát hiện mưa - Cần đóng giàn phơi");
-            }
-            
-            if (parsedData.temperature > userSettings.autoCloseTemperature) {
-                alerts.push(`🌡️ Nhiệt độ cao (${parsedData.temperature}°C > ${userSettings.autoCloseTemperature}°C)`);
-            }
-            
-            if (parsedData.humidity > userSettings.autoCloseHumidity) {
-                alerts.push(`💧 Độ ẩm cao (${parsedData.humidity}% > ${userSettings.autoCloseHumidity}%)`);
-            }
-            
-            if (parsedData.light < userSettings.minLightLevel) {
-                alerts.push(`🌙 Ánh sáng thấp (${parsedData.light} < ${userSettings.minLightLevel} lux)`);
+            // Kiểm tra điều kiện cảnh báo (chỉ khi autoMode bật)
+            if (userSettings.autoModeEnabled) {
+                // Kiểm tra cảm biến mưa (nếu bật sử dụng)
+                if (parsedData.rainSensor && userSettings.useRainForAuto) {
+                    alerts.push("🌧️ Phát hiện mưa - Cần đóng giàn phơi");
+                }
+                
+                // Kiểm tra độ ẩm (nếu bật sử dụng)
+                if (userSettings.useHumidityForAuto && parsedData.humidity > userSettings.autoCloseHumidity) {
+                    alerts.push(`💧 Độ ẩm cao (${parsedData.humidity}% > ${userSettings.autoCloseHumidity}%)`);}
             }
 
-            // Gửi thông báo nếu có cảnh báo
-            if (alerts.length > 0) {
+            // Gửi thông báo nếu có cảnh báo VÀ người dùng bật enableNotifications
+            if (alerts.length > 0 && userSettings.enableNotifications) {
                 const message =
                     `🚨 Cảnh báo Giàn Phơi Thông Minh:\n\n` +
                     `📊 Dữ liệu hiện tại:\n` +
