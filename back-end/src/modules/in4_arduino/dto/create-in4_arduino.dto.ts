@@ -5,4 +5,5 @@ export class CreateIn4ArduinoDto {
     rainSensor: boolean; // Cảm biến mưa
     rackStatus: string; // Trạng thái giàn phơi ('open', 'close')
     email?: string; // Email người dùng
+    predict?: boolean; // Mưa = 1, Không mưa = 0
 }

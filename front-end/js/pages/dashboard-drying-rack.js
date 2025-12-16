@@ -210,6 +210,25 @@ function updateTable(data) {
     });
 }
 
+function updatePredictCard(data) {
+    const card = document.getElementById('aiWeatherCard');
+    const icon = document.getElementById('aiIcon');
+    const title = document.getElementById('aiTitle');
+    const desc = document.getElementById('aiDesc');
+
+    if (data.prediction === "Rain") {
+        card.className = "ai-card rain-mode";
+        icon.innerText = "🌧️";
+        title.innerText = "Rain Predicted";
+        desc.innerText = "AI suggests closing the rack.";
+    } else {
+        card.className = "ai-card dry-mode";
+        icon.innerText = "☀️";
+        title.innerText = "Weather Looks Good";
+        desc.innerText = "Safe to dry clothes outside.";
+    }
+}
+
 // Điều khiển giàn phơi
 async function controlRack(action) {
     try {
