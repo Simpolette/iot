@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', function() {
   initCharts();
   loadDashboardData();
   
+  // Initialize buzzer toggle event
+  initBuzzerControl();
+  
   // Auto refresh - tần suất tùy theo time range
   startAutoRefresh();
 });
@@ -212,6 +215,9 @@ function updateStatusCards(data) {
     value.textContent = isRaining ? 'Có mưa' : 'Không mưa';
     label.textContent = isRaining ? 'Cảnh báo' : 'An toàn';
     rainCard.style.borderLeft = isRaining ? '4px solid #ef4444' : '4px solid #10b981';
+    
+    // Ẩn/hiện nút buzzer dựa trên trạng thái mưa và cảm biến mưa có bật hay không
+    updateBuzzerControlVisibility(isRaining, data.rainEnabled);
   }
   
   // Update temperature card
@@ -518,20 +524,21 @@ async function updateMode(isAuto) {
   }
 }
 
-// Hàm điều khiển giàn phơi
+// Hàm điều khiển giàn phơi - Gửi lệnh qua MQTT
 async function controlRack(action) {
   const token = localStorage.getItem('token');
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   
   try {
-    const response = await fetch(`${API_URL}/in4-arduino/${user.email}/control`, {
+    // Gửi lệnh MQTT qua API
+    const response = await fetch(`${API_URL}/mqtt/control`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ 
-        action: action // 'open' hoặc 'close'
+        action: action.toLowerCase() // 'open' hoặc 'close'
       })
     });
     
@@ -540,14 +547,14 @@ async function controlRack(action) {
     }
     
     const data = await response.json();
-    console.log('Control response:', data);
+    console.log('✅ MQTT Control response:', data);
     
     // Refresh data sau khi điều khiển
-    setTimeout(loadDashboardData, 1000);
+    setTimeout(loadDashboardData, 1500);
     
     return data;
   } catch (error) {
-    console.error('Error controlling rack:', error);
+    console.error('❌ Error controlling rack:', error);
     throw error;
   }
 }
@@ -557,5 +564,96 @@ function quickAction(action) {
     if (confirm('Bạn có chắc muốn thu giàn khẩn cấp?')) {
       showToast('Đang thu giàn...', 'success');
     }
+  }
+}
+
+// Hàm kiểm soát hiển thị nút buzzer
+function updateBuzzerControlVisibility(isRaining, rainSensorEnabled) {
+  const buzzerControlSection = document.getElementById('buzzerControlSection');
+  
+  if (buzzerControlSection) {
+    // Load buzzerEnabled setting from localStorage or fetch from API
+    loadBuzzerSetting().then(buzzerEnabled => {
+      // Hiện nút buzzer khi:
+      // 1. Cảm biến mưa đang BẬT
+      // 2. Tính năng buzzer được BẬT trong settings
+      if (rainSensorEnabled !== false && buzzerEnabled !== false) {
+        buzzerControlSection.style.display = 'block';
+      } else {
+        buzzerControlSection.style.display = 'none';
+      }
+    });
+  }
+}
+
+// Hàm load cài đặt buzzer từ API
+async function loadBuzzerSetting() {
+  const token = localStorage.getItem('token');
+  
+  try {
+    const response = await fetch(`${API_URL}/setting`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    
+    if (response.ok) {
+      const settings = await response.json();
+      return settings.buzzerEnabled !== undefined ? settings.buzzerEnabled : true;
+    }
+  } catch (error) {
+    console.error('Error loading buzzer setting:', error);
+  }
+  
+  return true; // Mặc định bật
+}
+
+// Hàm điều khiển buzzer
+async function controlBuzzer(enabled) {
+  const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  
+  try {
+    const response = await fetch(`${API_URL}/in4-arduino/${user.email}/buzzer`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ 
+        enabled: enabled
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to control buzzer');
+    }
+    
+    const data = await response.json();
+    console.log('Buzzer control response:', data);
+    
+    showToast(enabled ? '✅ Đã bật loa cảnh báo' : '❌ Đã tắt loa cảnh báo', 'success');
+    
+    return data;
+  } catch (error) {
+    console.error('Error controlling buzzer:', error);
+    showToast('❌ Lỗi khi điều khiển loa', 'error');
+    throw error;
+  }
+}
+
+// Khởi tạo sự kiện cho buzzer toggle
+function initBuzzerControl() {
+  const buzzerToggle = document.getElementById('buzzerToggle');
+  if (buzzerToggle) {
+    buzzerToggle.addEventListener('change', async function() {
+      const enabled = this.checked;
+      try {
+        await controlBuzzer(enabled);
+      } catch (error) {
+        // Rollback nếu lỗi
+        this.checked = !enabled;
+      }
+    });
   }
 }
