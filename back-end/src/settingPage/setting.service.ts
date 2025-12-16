@@ -17,11 +17,13 @@ export class SettingService {
     if (await this.settingModel.countDocuments({ email }) === 0) {
         // Nếu email này chưa có cài đặt thì tạo mặc định cho giàn phơi thông minh
         const defaultSettings = {
-            autoCloseTemperature: 35,       // Nhiệt độ tự động đóng (°C)
-            autoCloseHumidity: 80,          // Độ ẩm tự động đóng (%)
-            minLightLevel: 200,             // Mức ánh sáng tối thiểu (lux)
-            autoCloseOnRain: true,          // Tự động đóng khi mưa
-            enableNotifications: true,      // Bật thông báo
+            autoModeEnabled: false,         // Tắt chế độ tự động (mặc định điều khiển thủ công)
+            autoCloseHumidity: 80,          // Ngưỡng độ ẩm tự động đóng (%)
+            useHumidityForAuto: true,       // Sử dụng độ ẩm để kích hoạt tự động
+            useRainForAuto: true,           // Sử dụng cảm biến mưa để kích hoạt tự động
+            nightRetract: false,            // Không tự động thu vào ban đêm
+            buzzerEnabled: false,           // Tắt buzzer
+            enableNotifications: true,      // Bật thông báo email
             email: email,
             wifiSSID: '',
             wifiPassword: '',
@@ -45,6 +47,6 @@ export class SettingService {
 
   async updateThresholds(body: any, email: string): Promise<void> {
     console.log('[SettingService] Updating thresholds with data:', body);
-    await this.settingModel.updateOne({}, body, { upsert: true }).exec();
+    await this.settingModel.updateOne({ email }, body, { upsert: true }).exec();
   }
 }

@@ -52,8 +52,6 @@
         <div class="card-content">
           <h3>Cảm biến mưa</h3>
           <div class="status-value">Không mưa</div>
-          <div class="status-label">An toàn</div>
-          <div class="last-update">Vừa xong</div>
         </div>
       </div>
 
@@ -64,10 +62,20 @@
           </div>
         </div>
         <div class="card-content">
-          <h3>Nhiệt độ & Độ ẩm</h3>
-          <div class="status-value">28°C</div>
-          <div class="status-label">Độ ẩm: 65%</div>
-          <div class="last-update">Vừa xong</div>
+          <h3>Nhiệt độ</h3>
+          <div class="status-value">30°C</div>
+        </div>
+      </div>
+
+      <div class="status-card card-temp" data-card="humidity">
+        <div class="card-icon">
+          <div class="status-icon">
+            <i class="fas fa-droplet"></i>
+          </div>
+        </div>
+        <div class="card-content">
+          <h3>Độ ẩm</h3>
+          <div class="status-value">65%</div>
         </div>
       </div>
 
@@ -78,10 +86,8 @@
           </div>
         </div>
         <div class="card-content">
-          <h3>Ánh sáng</h3>
-          <div class="status-value">850 lux</div>
-          <div class="status-label">Sáng</div>
-          <div class="last-update">Vừa xong</div>
+          <h3>Mức độ sáng</h3>
+          <div class="status-value">6%</div>
         </div>
       </div>
 
@@ -93,72 +99,65 @@
         </div>
         <div class="card-content">
           <h3>Trạng thái giàn</h3>
-          <div class="status-value">100%</div>
-          <div class="status-label">Đã mở</div>
-          <div class="last-update">Vừa xong</div>
+          <div class="status-value">Mở</div>
+        </div>
+      </div>
+
+      <div class="status-card card-predict" data-card="predict">
+        <div class="card-icon">
+          <div class="status-icon">
+            <i class="fas fa-wand-magic-sparkles"></i>
+          </div>
+        </div>
+        <div class="card-content">
+          <h3>Dự đoán</h3>
+          <div class="status-value">Không mưa</div>
+          <!-- <div class="status-label">An toàn</div> -->
         </div>
       </div>
     </div>
 
     <!-- Control Panel -->
     <div class="control-section">
-      <div class="control-panel">
-        <h2><i class="fas fa-sliders-h"></i> Điều khiển giàn phơi</h2>
-
-        <div class="control-mode">
-          <label class="switch-label">
-            <span>Chế độ tự động</span>
-            <label class="switch">
-              <input type="checkbox" id="modeToggle" checked>
-              <span class="slider"></span>
-            </label>
-          </label>
-        </div>
-
-        <div class="manual-controls" id="manualControls" style="display: none;">
-          <h3>Điều khiển thủ công</h3>
-          <div class="control-buttons">
-            <button class="btn btn-control btn-extend" id="extendBtn">
-              <i class="fas fa-arrow-up"></i>
-              Mở ra
-            </button>
-            <button class="btn btn-control btn-retract" id="retractBtn">
-              <i class="fas fa-arrow-down"></i>
-              Thu vào
-            </button>
-            <button class="btn btn-control btn-stop" id="stopBtn">
-              <i class="fas fa-stop"></i>
-              Dừng
-            </button>
-          </div>
-
-          <div class="position-slider">
-            <label>Vị trí giàn phơi: <span id="positionValue">100</span>%</label>
-            <input type="range" id="positionSlider" min="0" max="100" value="100">
-          </div>
-        </div>
-
-        <div class="auto-status" id="autoStatus">
-          <div class="auto-info">
-            <i class="fas fa-info-circle"></i>
-            <p>Giàn phơi đang hoạt động ở chế độ tự động. Hệ thống sẽ tự động thu/mở dựa trên điều kiện thời tiết.</p>
-          </div>
-        </div>
-      </div>
 
       <!-- Quick Actions -->
       <div class="quick-actions">
         <h2><i class="fas fa-bolt"></i> Thao tác nhanh</h2>
-        <div class="action-buttons">
-          <button class="action-btn" id="refreshBtn">
-            <i class="fas fa-sync-alt"></i>
-            <span>Làm mới</span>
-          </button>
-          <button class="action-btn" onclick="quickAction('retract')">
-            <i class="fas fa-exclamation-triangle"></i>
-            <span>Thu khẩn cấp</span>
-          </button>
+
+        <!-- Toggle chế độ tự động/thủ công -->
+        <div class="quick-mode-toggle">
+          <label class="quick-switch-label">
+            <i class="fas fa-robot"></i>
+            <span id="quickModeText">Chế độ tự động</span>
+            <label class="quick-switch">
+              <input type="checkbox" id="quickModeToggle" checked>
+              <span class="quick-slider"></span>
+            </label>
+          </label>
         </div>
+
+
+
+        <!-- Điều khiển giàn phơi -->
+        <div class="rack-control-section">
+          <h3><i class="fas fa-hand-pointer"></i> Điều khiển giàn phơi</h3>
+          <div class="rack-control-buttons">
+            <button class="rack-btn rack-btn-open" id="quickOpenBtn" disabled>
+              <i class="fas fa-chevron-up"></i>
+              <span>Mở (OPEN)</span>
+            </button>
+            <button class="rack-btn rack-btn-close" id="quickCloseBtn" disabled>
+              <i class="fas fa-chevron-down"></i>
+              <span>Đóng (CLOSE)</span>
+            </button>
+          </div>
+          <div class="rack-control-note" id="autoModeNote">
+            <i class="fas fa-info-circle"></i>
+            <span>Tắt chế độ tự động để điều khiển thủ công</span>
+          </div>
+        </div>
+
+        <!-- Các thao tác khác -->
       </div>
     </div>
 
@@ -166,9 +165,14 @@
     <div class="charts-section">
       <div class="chart-container">
         <div class="chart-header">
-          <h2><i class="fas fa-chart-line"></i> Biểu đồ cảm biến</h2>
+          <div>
+            <h2><i class="fas fa-chart-line"></i> Biểu đồ cảm biến</h2>
+            <span class="live-indicator" id="liveIndicator">
+              <span class="live-dot"></span> Thời gian thực
+            </span>
+          </div>
           <select id="chartTimeRange" onchange="updateChartRange()">
-            <option value="1h">1 giờ qua</option>
+            <option value="1h">1 giờ qua (10s/điểm)</option>
             <option value="6h">6 giờ qua</option>
             <option value="12h" selected>12 giờ qua</option>
             <option value="24h">24 giờ qua</option>
@@ -179,49 +183,8 @@
           <canvas id="sensorChart"></canvas>
         </div>
       </div>
-
-      <div class="chart-container">
-        <div class="chart-header">
-          <h2><i class="fas fa-chart-pie"></i> Hoạt động hôm nay</h2>
-        </div>
-        <div class="chart-wrapper">
-          <canvas id="activityChart"></canvas>
-        </div>
-      </div>
     </div>
 
-    <!-- Activity Log -->
-    <div class="activity-section">
-      <div class="activity-header">
-        <h2><i class="fas fa-list"></i> Nhật ký hoạt động</h2>
-        <div class="activity-filters">
-          <select id="logFilter" onchange="filterLogs()">
-            <option value="all">Tất cả</option>
-            <option value="auto">Tự động</option>
-            <option value="manual">Thủ công</option>
-            <option value="alert">Cảnh báo</option>
-          </select>
-        </div>
-      </div>
-      <div class="activity-log" id="activityLog">
-        <table class="activity-table">
-          <thead>
-            <tr>
-              <th>Thời gian</th>
-              <th>Loại</th>
-              <th>Hành động</th>
-              <th>Trạng thái</th>
-              <th>Chi tiết</th>
-            </tr>
-          </thead>
-          <tbody id="activityTable">
-            <tr>
-              <td colspan="5" class="no-data">Đang tải dữ liệu...</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
   </div>
 
   <!-- Loading overlay -->
@@ -233,8 +196,9 @@
   <!-- Toast notification -->
   <div id="toast" class="toast"></div>
 
-  <script src="../js/create.chatbot.js"></script>
+  <script src="../js/inject-chatbot-widget.js"></script>
   <script src="../js/pages/smart-rack-dashboard.js"></script>
+  <script src="../js/pages/smart-rack-setting.js"></script>
 </body>
 
 </html>

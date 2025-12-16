@@ -4,6 +4,7 @@ import { CreateIn4ArduinoDto } from './dto/create-in4_arduino.dto';
 import { UpdateIn4ArduinoDto } from './dto/update-in4_arduino.dto';
 import { JwtAuthGuard } from 'src/auth/passport/jwt-auth.gaurd';
 import { AuthGuard } from '@nestjs/passport';
+import { Public } from 'src/customize/customize';
 
 @Controller('in4-arduino')
 export class In4ArduinoController {
@@ -14,6 +15,7 @@ export class In4ArduinoController {
     return this.in4ArduinoService.create(createIn4ArduinoDto);
   }
 
+  @Public()
   @Get()
   findAll() {
     return this.in4ArduinoService.findAll();

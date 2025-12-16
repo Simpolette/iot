@@ -19,10 +19,7 @@ export class in4_arduino {
     rainSensor: boolean; // Cảm biến mưa (true: có mưa, false: không mưa)
 
     @Prop({ required: true })
-    rackStatus: string; // Trạng thái giàn phơi ('open', 'closed', 'opening', 'closing')
-
-    @Prop()
-    rackPosition: number; // Vị trí giàn phơi (0-100%)
+    rackStatus: string; // Trạng thái giàn phơi ('open', 'close')
 
     @Prop({ default: 'example@gmail.com' })
     email: string;

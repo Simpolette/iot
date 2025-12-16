@@ -10,13 +10,13 @@ import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/passport/jwt-auth.gaurd';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
-// import { TelegramModule } from './telegram/telegram.module'; // Vô hiệu hóa telegram
 import { MqttModule } from './mqtt/mqtt.module';
 import { MqttService } from './mqtt/mqtt.service';
 import { SettingService } from './settingPage/setting.service';
 import { SettingController } from './settingPage/setting.controller';
 import { SettingModule } from './settingPage/setting.module';
 import { WeatherModule } from './modules/weather/weather.module';
+import { ActiveUserController } from './controllers/active-user.controller';
 
 @Module({
   imports: [
@@ -24,7 +24,6 @@ import { WeatherModule } from './modules/weather/weather.module';
     UsersModule,
     In4ArduinoModule,
     AuthModule,
-    // TelegramModule, // Vô hiệu hóa telegram
     MqttModule,
     SettingModule,
     WeatherModule,
@@ -70,7 +69,7 @@ import { WeatherModule } from './modules/weather/weather.module';
 
     }),
   ],
-  controllers: [AppController, MqttService],
+  controllers: [AppController, MqttService, ActiveUserController],
   providers: [
     AppService,
     {

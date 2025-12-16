@@ -1,0 +1,140 @@
+### ==========================================
+### 🔐 AUTHENTICATION - Đăng nhập để lấy JWT Token
+### ==========================================
+### QUAN TRỌNG: Chạy test LOGIN trước, copy token từ response, 
+### sau đó thay YOUR_JWT_TOKEN và YOUR_EMAIL ở các test bên dưới
+
+### 1. ĐĂNG NHẬP - Lấy JWT Token
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "group09nmcntt@gmail.com",
+  "password": "Q1234567"
+}
+
+### 2. ĐĂNG KÝ - Tạo user mới (nếu chưa có)
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "123456",
+  "name": "Test User"
+}
+
+### ==========================================
+### 💬 CHATBOT API
+### ==========================================
+
+### Test Chatbot API
+curl "https://generativelanguage.googleapis.com/v1beta/models?key=AIzaSyDSdhYO3LaabRrV2t8MJkDcmdhbiIf_mCc"
+
+### Test Chatbot với câu chào đơn giản
+POST http://localhost:8080/api/chatbot
+Content-Type: application/json
+
+{
+  "message": "Xin chào, bạn là ai?"
+}
+
+### Test Chatbot với câu hỏi về hệ thống
+POST http://localhost:8080/api/chatbot
+Content-Type: application/json
+
+{
+  "message": "Giàn phơi thông minh là gì?",
+  "userId": "test-user-123"
+}
+
+### Test Chatbot với câu hỏi về ESP32
+POST http://localhost:8080/api/chatbot
+Content-Type: application/json
+
+{
+  "message": "Hướng dẫn tôi kết nối ESP32"
+}
+
+### ==========================================
+### TEST IN4_ARDUINO - Lấy dữ liệu từ MongoDB
+### ==========================================
+
+### 1. Lấy tất cả dữ liệu (không giới hạn)
+GET http://localhost:8080/api/in4-arduino
+Content-Type: application/json
+
+### 2. Lấy dữ liệu mới nhất theo email (CẦN JWT TOKEN)
+# Thay YOUR_JWT_TOKEN bằng token thực từ login
+# Thay YOUR_EMAIL bằng email thực của user
+GET http://localhost:8080/api/in4-arduino/YOUR_EMAIL/latest?limit=10
+Authorization: Bearer YOUR_JWT_TOKEN
+Content-Type: application/json
+
+### 3. Lấy 360 bản ghi (1 giờ - 10s/record)
+GET http://localhost:8080/api/in4-arduino/YOUR_EMAIL/latest?limit=360
+Authorization: Bearer YOUR_JWT_TOKEN
+Content-Type: application/json
+
+### 4. Lấy 2160 bản ghi (6 giờ)
+GET http://localhost:8080/api/in4-arduino/YOUR_EMAIL/latest?limit=2160
+Authorization: Bearer YOUR_JWT_TOKEN
+Content-Type: application/json
+
+### 5. Lấy 4320 bản ghi (12 giờ)
+GET http://localhost:8080/api/in4-arduino/YOUR_EMAIL/latest?limit=4320
+Authorization: Bearer YOUR_JWT_TOKEN
+Content-Type: application/json
+
+### 6. Lấy 8640 bản ghi (24 giờ)
+GET http://localhost:8080/api/in4-arduino/YOUR_EMAIL/latest?limit=8640
+Authorization: Bearer YOUR_JWT_TOKEN
+Content-Type: application/json
+
+### 7. Lấy 60480 bản ghi (7 ngày)
+GET http://localhost:8080/api/in4-arduino/YOUR_EMAIL/latest?limit=60480
+Authorization: Bearer YOUR_JWT_TOKEN
+Content-Type: application/json
+
+### 8. Tạo dữ liệu mới (POST)
+POST http://localhost:8080/api/in4-arduino
+Content-Type: application/json
+
+{
+  "temperature": 28.5,
+  "humidity": 65.2,
+  "light": 450,
+  "rainSensor": "yes",
+  "rackStatus": "open",
+  "email": "test@example.com"
+}
+
+### 9. Upload dữ liệu (CẦN JWT TOKEN)
+POST http://localhost:8080/api/in4-arduino/upload
+Authorization: Bearer YOUR_JWT_TOKEN
+Content-Type: application/json
+
+{
+  "temperature": 30.0,
+  "humidity": 70.0,
+  "light": 500,
+  "rainSensor": "no",
+  "rackStatus": "close",
+  "email": "YOUR_EMAIL"
+}
+
+### 10. Lấy 1 bản ghi theo ID
+GET http://localhost:8080/api/in4-arduino/RECORD_ID
+Content-Type: application/json
+
+### 11. Cập nhật bản ghi theo ID
+PATCH http://localhost:8080/api/in4-arduino/RECORD_ID
+Content-Type: application/json
+
+{
+  "temperature": 25.0,
+  "rackStatus": "open"
+}
+
+### 12. Xóa bản ghi theo ID
+DELETE http://localhost:8080/api/in4-arduino/RECORD_ID
+Content-Type: application/json

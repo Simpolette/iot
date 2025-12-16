@@ -9,9 +9,9 @@
   --border-radius: 8px; --transition: all 0.3s ease;
 }
 body { font-family: 'Segoe UI', sans-serif; background: var(--light-gray); color: var(--dark-color); }
-.main-container { max-width: 1200px; margin: 80px auto 40px; padding: 0 20px; }
-.page-header { background: var(--white); padding: 2rem; border-radius: var(--border-radius); box-shadow: var(--shadow); margin-bottom: 2rem; }
-.page-header h1 { font-size: 2rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+.main-container { max-width: 1600px; margin: 80px auto 40px; padding: 0 60px; }
+.page-header { background: var(--white); padding: 3.5rem; border-radius: var(--border-radius); box-shadow: var(--shadow); margin-bottom: 3rem; }
+.page-header h1 { font-size: 2.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; }
 .page-header h1 i { color: var(--primary-color); }
 .page-header p { color: var(--gray-color); }
 .settings-tabs { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
@@ -20,8 +20,21 @@ body { font-family: 'Segoe UI', sans-serif; background: var(--light-gray); color
 .tab-btn.active { background: var(--gradient-primary); color: var(--white); }
 .tab-content { display: none; }
 .tab-content.active { display: block; }
-.settings-section { background: var(--white); border-radius: var(--border-radius); padding: 2rem; margin-bottom: 2rem; box-shadow: var(--shadow); }
-.settings-section h2 { font-size: 1.5rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+
+/* Auto mode settings transition */
+.auto-mode-settings {
+  transition: var(--transition);
+  opacity: 1;
+  max-height: 10000px;
+  overflow: hidden;
+}
+.auto-mode-settings[style*="display: none"] {
+  opacity: 0;
+  max-height: 0;
+}
+
+.settings-section { background: var(--white); border-radius: var(--border-radius); padding: 2.5rem; margin-bottom: 2.5rem; box-shadow: var(--shadow); }
+.settings-section h2 { font-size: 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
 .settings-section h2 i { color: var(--primary-color); }
 .section-description { color: var(--gray-color); margin-bottom: 1.5rem; }
 .setting-card { background: var(--light-gray); border-radius: var(--border-radius); padding: 1.5rem; margin-bottom: 1.5rem; }
@@ -35,19 +48,73 @@ body { font-family: 'Segoe UI', sans-serif; background: var(--light-gray); color
 input[type="range"] { flex: 1; height: 8px; border-radius: 5px; background: #e5e7eb; outline: none; -webkit-appearance: none; }
 input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--primary-color); cursor: pointer; }
 .value-display { min-width: 50px; text-align: center; font-weight: 600; color: var(--primary-color); }
-.switch-label { display: flex; justify-content: space-between; align-items: center; }
-.switch { position: relative; display: inline-block; width: 60px; height: 34px; }
-.switch input { opacity: 0; width: 0; height: 0; }
-.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: 0.4s; border-radius: 34px; }
-.slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: 0.4s; border-radius: 50%; }
-input:checked + .slider { background-color: var(--success-color); }
-input:checked + .slider:before { transform: translateX(26px); }
+/* Container của switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  flex-shrink: 0;
+}
+
+/* Ẩn input mặc định */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Thanh trượt nền (Track) */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc; /* Màu khi tắt */
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+/* Hình tròn trắng (Knob) */
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px; /* Giảm từ 28px xuống 26px để tạo khoảng thở */
+  width: 26px;
+  left: 4px;    /* Khoảng cách từ trái: (34 - 26) / 2 = 4px */
+  bottom: 4px;  /* Khoảng cách từ dưới: (34 - 26) / 2 = 4px -> Tự động căn giữa dọc */
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+  /* Thêm bóng đổ nhẹ để nút trông nổi và đẹp hơn */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+}
+
+/* Trạng thái khi BẬT (Checked) */
+input:checked + .slider {
+  /* Sử dụng màu xanh từ biến của bạn, hoặc fallback sang màu xanh lá chuẩn */
+  background-color: var(--success-color, #2ecc71); 
+}
+
+/* Di chuyển hình tròn khi bật */
+input:checked + .slider:before {
+  /* Tính toán: Width(60) - Left(4) - Right(4) - Knob(26) = 26px */
+  transform: translateX(26px);
+}
 .checkbox-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 0; }
 .checkbox-item input[type="checkbox"] { width: 20px; height: 20px; }
 .action-buttons { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem; }
 .btn { padding: 0.75rem 2rem; border: none; border-radius: var(--border-radius); font-weight: 600; cursor: pointer; transition: var(--transition); }
 .btn-save { background: var(--gradient-primary); color: var(--white); }
+.btn-primary { background: var(--gradient-primary); color: var(--white); }
+.btn-secondary { background: var(--gray-color); color: var(--white); }
 .btn:hover { transform: translateY(-2px); }
 .toast { position: fixed; bottom: 2rem; right: 2rem; padding: 1rem 1.5rem; border-radius: var(--border-radius); opacity: 0; transition: var(--transition); z-index: 1000; }
 .toast.show { opacity: 1; }
 .toast.success { background: var(--success-color); color: white; }
+.toast.error { background: var(--danger-color); color: white; }
+.loading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; }
+.spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid var(--primary-color); border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }

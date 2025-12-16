@@ -2,7 +2,10 @@
 const API_URL = 'http://localhost:8080/api';
 
 document.addEventListener('DOMContentLoaded', function() {
-  document.body.style.display = 'block';
+  // Wait for CSS to load
+  requestAnimationFrame(() => {
+    document.body.classList.add('loaded');
+  });
   loadUserProfile();
 });
 

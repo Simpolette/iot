@@ -79,6 +79,17 @@ function updateCards(latest) {
             rackElement.style.color = '#f39c12';
         }
     }
+
+    // Cập nhật tính năng AI
+    const predictElement = document.getElementById('value-predict');
+    if (predictElement) {
+        if (latest.prediction === true) {
+            predictElement.innerText = "Có mưa";
+        }
+        else {
+            predictElement.innerText = "Không mưa"
+        }
+    }
 }
 
 // Cập nhật biểu đồ
@@ -208,25 +219,6 @@ function updateTable(data) {
         };
         row.insertCell(6).innerText = statusText[item.rackStatus] || item.rackStatus;
     });
-}
-
-function updatePredictCard(data) {
-    const card = document.getElementById('aiWeatherCard');
-    const icon = document.getElementById('aiIcon');
-    const title = document.getElementById('aiTitle');
-    const desc = document.getElementById('aiDesc');
-
-    if (data.prediction === "Rain") {
-        card.className = "ai-card rain-mode";
-        icon.innerText = "🌧️";
-        title.innerText = "Rain Predicted";
-        desc.innerText = "AI suggests closing the rack.";
-    } else {
-        card.className = "ai-card dry-mode";
-        icon.innerText = "☀️";
-        title.innerText = "Weather Looks Good";
-        desc.innerText = "Safe to dry clothes outside.";
-    }
 }
 
 // Điều khiển giàn phơi

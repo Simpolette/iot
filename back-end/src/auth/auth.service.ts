@@ -6,12 +6,14 @@ import { access } from 'fs';
 import { JwtService } from '@nestjs/jwt';
 import { register } from 'module';
 import { CreateAuthDto } from './dto/create-auth.dto';
+import { ActiveUserService } from '../services/active-user.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private activeUserService: ActiveUserService,
   ) { }
 
   async validateUser(email: string, pass: string): Promise<any> {
@@ -42,6 +44,14 @@ export class AuthService {
 
   async login(user: any) {
     const payload = { sub: user._id, email: user.email };
+    
+    // 🔄 Tự động chuyển active user email và migrate data
+    try {
+      await this.activeUserService.setActiveUserEmail(user.email);
+    } catch (error) {
+      console.error('⚠️ Không thể set active user email:', error);
+    }
+    
     return {
       accessToken: await this.jwtService.sign(payload),
       user: {

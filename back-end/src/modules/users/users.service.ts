@@ -203,31 +203,7 @@ export class UsersService {
     }
   }
 
-  // Phương thức cũ - giữ lại để tương thích ngược (có thể xóa sau)
-  async sendFireAlertEmail(
-    email: string,
-    sensorData: {
-      mq2: number;
-      mq7: number;
-      mq135: number;
-      temperature: number;
-      flame: number;
-    },
-    thresholds: {
-      MQ2: number;
-      MQ7: number;
-      MQ135: number;
-      temp: number;
-    },
-  ) {
-    console.warn(
-      'sendFireAlertEmail is deprecated. Use sendDryingRackAlert instead.',
-    );
-    return { success: false, message: 'Method deprecated' };
-  }
-
   async notifyUser(email: string, content: string) {
-    // Gửi email thay vì Telegram (vì đã vô hiệu hóa Telegram)
     try {
       const user = await this.userModel.findOne({ email });
       if (!user) {

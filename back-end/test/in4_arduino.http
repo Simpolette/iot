@@ -1,0 +1,54 @@
+### ==========================================
+### 🔐 BƯỚC 1: ĐĂNG NHẬP ĐỂ LẤY TOKEN
+### ==========================================
+
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "group09nmcntt@gmail.com",
+  "password": "Q1234567"
+}
+
+YOUR_TOKEN_HERE: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OTNkNDE4ZmM2MzQzZmEwMzRmNmIyMTIiLCJlbWFpbCI6Imdyb3VwMDlubWNudHRAZ21haWwuY29tIiwiaWF0IjoxNzY1ODI2NjI3LCJleHAiOjE3NjU5MTMwMjd9.xdiS7kfSGtH-SVF87wCqBIUvQiissRVhWBCbOYVE6DA
+
+### ==========================================
+### 📊 BƯỚC 2: TEST LẤY DỮ LIỆU TỪ MONGODB
+### ==========================================
+### SAU KHI LOGIN THÀNH CÔNG:
+### 1. Copy giá trị "access_token" từ response trên
+### 2. Paste vào chỗ YOUR_TOKEN_HERE bên dưới
+### 3. Chạy test
+
+### Test 1: Lấy tất cả dữ liệu (KHÔNG CẦN TOKEN)
+GET http://localhost:8080/api/in4-arduino
+Content-Type: application/json
+
+###
+
+### Test 2: Lấy 10 bản ghi mới nhất (CẦN TOKEN)
+GET http://localhost:8080/api/in4-arduino/group09nmcntt@gmail.com/latest?limit=10
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OTNkNDE4ZmM2MzQzZmEwMzRmNmIyMTIiLCJlbWFpbCI6Imdyb3VwMDlubWNudHRAZ21haWwuY29tIiwiaWF0IjoxNzY1ODI1MzQwLCJleHAiOjE3NjU5MTE3NDB9.qGDesD_50BG01boWMu4rrFhk7zP0XyqKKzTUxiJTao0
+Content-Type: application/json
+
+###
+
+### Test 3: Lấy 360 bản ghi (1 giờ)
+GET http://localhost:8080/api/in4-arduino/group09nmcntt@gmail.com/latest?limit=360
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OTNkNDE4ZmM2MzQzZmEwMzRmNmIyMTIiLCJlbWFpbCI6Imdyb3VwMDlubWNudHRAZ21haWwuY29tIiwiaWF0IjoxNzY1ODI1MzQwLCJleHAiOjE3NjU5MTE3NDB9.qGDesD_50BG01boWMu4rrFhk7zP0XyqKKzTUxiJTao0
+Content-Type: application/json
+
+###
+
+### Test 4: Tạo dữ liệu mới (TEST)
+POST http://localhost:8080/api/in4-arduino
+Content-Type: application/json
+
+{
+  "temperature": 28.5,
+  "humidity": 65.2,
+  "light": 450,
+  "rainSensor": false,
+  "rackStatus": "open",
+  "email": "group09nmcntt@gmail.com"
+}
