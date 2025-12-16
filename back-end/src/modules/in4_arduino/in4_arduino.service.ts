@@ -5,12 +5,14 @@ import { Model } from 'mongoose';
 import { in4_arduino, in4_arduinoDocument } from './schema/in4_arduino.schema';
 import { CreateIn4ArduinoDto } from './dto/create-in4_arduino.dto';
 import { UpdateIn4ArduinoDto } from './dto/update-in4_arduino.dto';
+import { WeatherService } from '../weather/weather.service';
 
 @Injectable()
 export class In4ArduinoService {
   constructor(
     @InjectModel(in4_arduino.name)
     private readonly in4ArduinoModel: Model<in4_arduinoDocument>,
+    private readonly weatherService: WeatherService,
   ) { }
 
   async create(createIn4ArduinoDto: CreateIn4ArduinoDto) {
@@ -31,7 +33,10 @@ export class In4ArduinoService {
     }).exec();
   }
 
-  async save(dto: { temperature: number; humidity: number; light: number; rainSensor: boolean; rackStatus: string; rackPosition?: number; email?: string }) {
+  async save(dto: { temperature: number; humidity: number; light: number; rainSensor: boolean; rackStatus: string; rackPosition?: number; email?: string; predict?: boolean }) {
+    const isRain = await this.weatherService.predictRain(dto.temperature, dto.humidity)
+    dto.predict = isRain;
+    
     return await this.in4ArduinoModel.create(dto);
   }
 
