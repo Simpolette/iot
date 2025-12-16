@@ -10,7 +10,6 @@ import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/passport/jwt-auth.gaurd';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
-// import { TelegramModule } from './telegram/telegram.module'; // Vô hiệu hóa telegram
 import { MqttModule } from './mqtt/mqtt.module';
 import { MqttService } from './mqtt/mqtt.service';
 import { SettingService } from './settingPage/setting.service';
@@ -25,7 +24,6 @@ import { ActiveUserController } from './controllers/active-user.controller';
     UsersModule,
     In4ArduinoModule,
     AuthModule,
-    // TelegramModule, // Vô hiệu hóa telegram
     MqttModule,
     SettingModule,
     WeatherModule,

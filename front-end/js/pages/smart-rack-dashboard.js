@@ -42,7 +42,7 @@ function initCharts() {
             yAxisID: 'y'
           },
           {
-            label: 'Ánh sáng (lux)',
+            label: 'Mức độ sáng (%)',
             data: [],
             borderColor: '#f59e0b',
             backgroundColor: 'rgba(245, 158, 11, 0.1)',
@@ -109,7 +109,7 @@ function initCharts() {
             position: 'right',
             title: {
               display: true,
-              text: 'Ánh sáng (lux)'
+              text: 'Mức độ sáng (%)'
             },
             grid: {
               drawOnChartArea: false,
@@ -210,10 +210,9 @@ function updateStatusCards(data) {
   const rainCard = document.querySelector('[data-card="rain"]');
   if (rainCard) {
     const value = rainCard.querySelector('.status-value');
-    const label = rainCard.querySelector('.status-label');
-    const isRaining = data.rain || data.rainSensor || false;
+    // const isRaining = data.rain || data.rainSensor || false;
+    const isRaining = data.rainSensor || false;
     value.textContent = isRaining ? 'Có mưa' : 'Không mưa';
-    label.textContent = isRaining ? 'Cảnh báo' : 'An toàn';
     rainCard.style.borderLeft = isRaining ? '4px solid #ef4444' : '4px solid #10b981';
     
     // Ẩn/hiện nút buzzer dựa trên trạng thái mưa và cảm biến mưa có bật hay không
@@ -224,38 +223,47 @@ function updateStatusCards(data) {
   const tempCard = document.querySelector('[data-card="temperature"]');
   if (tempCard) {
     const value = tempCard.querySelector('.status-value');
-    const label = tempCard.querySelector('.status-label');
     const temp = data.temperature || 0;
-    const humidity = data.humidity || 0;
     value.textContent = `${temp}°C`;
-    label.textContent = `Độ ẩm: ${humidity}%`;
+  }
+
+  const humidCard = document.querySelector('[data-card="humidity"]');
+  if (humidCard) {
+    const value = humidCard.querySelector('.status-value');
+    const humidity = data.humidity || 0;
+    value.textContent = `Độ ẩm: ${humidity}%`;
   }
   
   // Update light card - use timestamp as placeholder for now
   const lightCard = document.querySelector('[data-card="light"]');
   if (lightCard) {
     const value = lightCard.querySelector('.status-value');
-    const label = lightCard.querySelector('.status-label');
-    const timestamp = new Date(data.timestamp || data.createdAt);
-    const hour = timestamp.getHours();
-    const lightLevel = hour >= 6 && hour <= 18 ? 850 : 100;
-    value.textContent = `${lightLevel} lux`;
-    label.textContent = lightLevel > 500 ? 'Sáng' : 'Tối';
+    const lightLevel = data.light || 0;
+    value.textContent = `${lightLevel} %`;
   }
   
   // Update rack card - placeholder based on weather
   const rackCard = document.querySelector('[data-card="rack"]');
   if (rackCard) {
     const value = rackCard.querySelector('.status-value');
-    const label = rackCard.querySelector('.status-label');
-    const isRaining = data.rain || data.rainSensor || false;
-    
+    const rackStatus = data.rackStatus;
+
     // Chỉ hiển thị Mở hoặc Đóng
-    value.textContent = isRaining ? 'Đóng' : 'Mở';
-    label.textContent = isRaining ? 'Đã thu vào' : 'An toàn';
+    console.log(rackStatus);
+    value.textContent = rackStatus == "close" ? 'Đóng' : 'Mở';
     
     // Màu sắc: Xanh lá (mở), Xanh dương (đóng)
-    rackCard.style.borderLeft = isRaining ? '4px solid #6366f1' : '4px solid #10b981';
+    rackCard.style.borderLeft = rackStatus == "close" ? '4px solid #6366f1' : '4px solid #10b981';
+  }
+
+  const predictCard = document.querySelector('[data-card="predict"]');
+  if (predictCard) {
+    const value = predictCard.querySelector('.status-value');
+    const predict = data.predict
+    
+    value.textContent = predict ? 'Có mưa' : 'Không mưa';
+    
+    predictCard.style.borderLeft = predict == 1 ? '4px solid #6366f1' : '4px solid #10b981';
   }
 }
 

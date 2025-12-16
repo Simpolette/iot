@@ -104,7 +104,7 @@ export class MqttService {
                 humidity: Number(payload.hum || payload.humidity || 0),              // DHT11 - Độ ẩm (%)
                 light: Number(payload.light || 0),                    // Cảm biến ánh sáng (lux hoặc 0-4095)
                 rainSensor: Boolean(payload.raining || payload.rainSensor || false),     // Cảm biến mưa (true = có mưa)
-                rackStatus: String(payload.state || payload.rackStatus || 'STOPPED').toLowerCase(),  // Trạng thái: OPENING, CLOSING, STOPPED
+                rackStatus: String(payload.state || payload.rackStatus || 'STOP').toLowerCase(),  // Trạng thái: OPEN, CLOSE, STOP
                 rackPosition: Number(payload.rackPosition || 0),      // Vị trí giàn (0-100%)
                 email: userEmail,  // ✅ Email mặc định là email đã đăng nhập
             };
@@ -112,6 +112,15 @@ export class MqttService {
             // Lưu vào MongoDB
             await this.in4ArduinoService.save(parsedData);
             console.log(`✅ Dữ liệu đã lưu MongoDB (email: ${userEmail})`);
+
+            // const parsedConfigData = {
+            //     autoMode: Boolean(payload.autoMode || false),        
+            //     useRain: Boolean(payload.autoMode || false),        
+            //     nightRetract: Boolean(payload.autoMode || false),   
+            //     useHumidity: Boolean(payload.autoMode || false),    
+            //     buzzer: Boolean(payload.autoMode || false),   
+            //     autoCloseHumid: Number(payload.autoCloseHumid || 0),
+            // };
 
             // Lấy ngưỡng cài đặt từ database
             const settings = await this.settingService.getThresholds(1, userEmail);
@@ -143,7 +152,7 @@ export class MqttService {
                     `📊 Dữ liệu hiện tại:\n` +
                     `🌡️ Nhiệt độ: ${parsedData.temperature}°C\n` +
                     `💧 Độ ẩm: ${parsedData.humidity}%\n` +
-                    `☀️ Ánh sáng: ${parsedData.light} lux\n` +
+                    `☀️ Mức độ sáng: ${parsedData.light}%\n` +
                     `🌧️ Mưa: ${parsedData.rainSensor ? 'Có' : 'Không'}\n` +
                     `🎚️ Trạng thái giàn: ${parsedData.rackStatus} (${parsedData.rackPosition}%)\n\n` +
                     `⚠️ Cảnh báo:\n${alerts.join('\n')}`;
