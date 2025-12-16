@@ -26,6 +26,9 @@ export class in4_arduino {
 
     @Prop({ default: 'example@gmail.com' })
     email: string;
+
+    @Prop({ default: false })
+    predict: boolean; // Mưa = 1, không mưa = 0
 }
 
 export const in4_arduinoSchema = SchemaFactory.createForClass(in4_arduino);

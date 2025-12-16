@@ -16,6 +16,7 @@ import { MqttService } from './mqtt/mqtt.service';
 import { SettingService } from './settingPage/setting.service';
 import { SettingController } from './settingPage/setting.controller';
 import { SettingModule } from './settingPage/setting.module';
+import { WeatherModule } from './modules/weather/weather.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { SettingModule } from './settingPage/setting.module';
     // TelegramModule, // Vô hiệu hóa telegram
     MqttModule,
     SettingModule,
+    WeatherModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env']
