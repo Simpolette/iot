@@ -13,6 +13,7 @@ import { CreateAuthDto } from 'src/auth/dto/create-auth.dto';
 import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
 import { MailerService } from '@nestjs-modules/mailer';
+import { PushsaferService } from '../pushsafer/pushsafer.service';
 // import { TelegramService } from 'src/telegram/telegram.service'; // Vô hiệu hóa telegram
 
 @Injectable()
@@ -21,13 +22,14 @@ export class UsersService {
     @InjectModel(User.name)
     private userModel: Model<User>,
     private readonly mailerService: MailerService,
+    private readonly pushsaferService: PushsaferService,
     // private telegramService: TelegramService, // Vô hiệu hóa telegram
-  ) { }
+  ) {}
 
   isEmailExist = async (email: string) => {
     const user = await this.userModel.exists({ email });
     return user ? true : false;
-  }
+  };
 
   async create(createUserDto: CreateUserDto) {
     const { name, email, username, password } = createUserDto;
@@ -58,7 +60,7 @@ export class UsersService {
       .limit(pageSize)
       .skip((current - 1) * pageSize)
       .select('-password')
-      .sort(sort as any) // need to know what type/command can be used
+      .sort(sort as any); // need to know what type/command can be used
     return { results, totalItems, totalPages, current, pageSize };
   }
 
@@ -73,7 +75,7 @@ export class UsersService {
   }
 
   async findByEmail(email: string) {
-    return await this.userModel.findOne({ email })
+    return await this.userModel.findOne({ email });
   }
 
   async findByCodeID(codeID: string) {
@@ -98,14 +100,13 @@ export class UsersService {
           age: updateUserDto.age,
         },
       },
-    )
+    );
   }
 
   async remove(_id: string) {
     if (mongoose.isValidObjectId(_id)) {
       return await this.userModel.deleteOne({ _id });
-    }
-    else {
+    } else {
       throw new BadRequestException('Invalid user ID');
     }
   }
@@ -118,7 +119,9 @@ export class UsersService {
     }
     const hashedPassword = await hashPassword(password);
     // Tạo mã OTP đơn giản 6 số (không hash)
-    const activationCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const activationCode = Math.floor(
+      100000 + Math.random() * 900000,
+    ).toString();
     const User = await this.userModel.create({
       name,
       password: hashedPassword,
@@ -126,7 +129,7 @@ export class UsersService {
       isActive: false,
       codeID: activationCode, // Lưu mã OTP trực tiếp (không hash)
       codeExpire: dayjs().add(5, 'minutes').toDate(),
-    })
+    });
     try {
       await this.mailerService.sendMail({
         to: User.email, // list of receivers
@@ -134,17 +137,16 @@ export class UsersService {
         template: 'register',
         context: {
           name: User?.name ?? User.email,
-          activationCode: activationCode // Gửi mã OTP đơn giản trong email
-        }
-      })
-    }
-    catch (err) {
-      console.error("Error sending email", err);
+          activationCode: activationCode, // Gửi mã OTP đơn giản trong email
+        },
+      });
+    } catch (err) {
+      console.error('Error sending email', err);
     }
     return {
       _id: User._id,
-      email: User.email
-    }
+      email: User.email,
+    };
   }
 
   // Gửi email cảnh báo cho giàn phơi thông minh
@@ -163,11 +165,12 @@ export class UsersService {
       autoCloseHumidity: number;
       minLightLevel: number;
       autoCloseOnRain: boolean;
-    }
+    },
   ) {
     try {
       const rainAlert = sensorData.rainSensor && thresholds.autoCloseOnRain;
-      const tempAlert = sensorData.temperature > thresholds.autoCloseTemperature;
+      const tempAlert =
+        sensorData.temperature > thresholds.autoCloseTemperature;
       const humidAlert = sensorData.humidity > thresholds.autoCloseHumidity;
       const lightAlert = sensorData.light < thresholds.minLightLevel;
 
@@ -215,12 +218,13 @@ export class UsersService {
       MQ7: number;
       MQ135: number;
       temp: number;
-    }
+    },
   ) {
-    console.warn('sendFireAlertEmail is deprecated. Use sendDryingRackAlert instead.');
+    console.warn(
+      'sendFireAlertEmail is deprecated. Use sendDryingRackAlert instead.',
+    );
     return { success: false, message: 'Method deprecated' };
   }
-
 
   async notifyUser(email: string, content: string) {
     // Gửi email thay vì Telegram (vì đã vô hiệu hóa Telegram)
@@ -249,8 +253,14 @@ export class UsersService {
           </div>
         `,
       });
-      
+
       console.log('✅ Email notification sent to:', email);
+
+      // Kiểm tra nếu có cảnh báo mưa thì gửi Pushsafer
+      if (content.includes('🌧️') && content.includes('Phát hiện mưa')) {
+        await this.pushsaferService.sendRainAlert();
+        console.log('✅ Pushsafer rain alert sent');
+      }
     } catch (error) {
       console.error('❌ Error sending notification email:', error);
     }
