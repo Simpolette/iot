@@ -13,7 +13,7 @@ export class PushsaferService {
   async sendRainAlert(message?: string): Promise<void> {
     try {
       const defaultMessage = encodeURIComponent(
-        '[size=24]Trời mưa!!! Tự động thu dàn phơi![/size]',
+        '[size=24]Phát hiện trời mưa!![/size]',
       );
       const params = {
         k: this.PRIVATE_KEY,
