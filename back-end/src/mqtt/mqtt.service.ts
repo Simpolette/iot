@@ -102,7 +102,7 @@ export class MqttService {
             const parsedData = {
                 temperature: Number(payload.temp || payload.temperature || 0),        // DHT11 - Nhiệt độ (°C)
                 humidity: Number(payload.hum || payload.humidity || 0),              // DHT11 - Độ ẩm (%)
-                light: Number(payload.light || 0),                    // Cảm biến ánh sáng (lux hoặc 0-4095)
+                light: Number(payload.light || 0),                    // Cảm biến ánh sáng 
                 rainSensor: Boolean(payload.raining || payload.rainSensor || false),     // Cảm biến mưa (true = có mưa)
                 rackStatus: String(payload.state || payload.rackStatus || 'STOP').toLowerCase(),  // Trạng thái: OPEN, CLOSE, STOP
                 rackPosition: Number(payload.rackPosition || 0),      // Vị trí giàn (0-100%)
@@ -136,13 +136,12 @@ export class MqttService {
             // Kiểm tra điều kiện cảnh báo (chỉ khi autoMode bật)
             if (userSettings.autoModeEnabled) {
                 // Kiểm tra cảm biến mưa (nếu bật sử dụng)
-                if (parsedData.rainSensor && userSettings.useRainForAuto) {
-                    alerts.push("🌧️ Phát hiện mưa - Cần đóng giàn phơi");
+                if (parsedData.rainSensor && userSettings.useRainForAuto && parsedData.rackStatus === 'open') {
+                    alerts.push("🌧️ Phát hiện mưa - Đang đóng giàn phơi");
                 }
-                
-                // Kiểm tra độ ẩm (nếu bật sử dụng)
-                if (userSettings.useHumidityForAuto && parsedData.humidity > userSettings.autoCloseHumidity) {
-                    alerts.push(`💧 Độ ẩm cao (${parsedData.humidity}% > ${userSettings.autoCloseHumidity}%)`);}
+            }
+            if (parsedData.rainSensor && !userSettings.useRainForAuto && parsedData.rackStatus === 'open') {
+                alerts.push("🌧️ Phát hiện mưa - Nên đóng giàn phơi");
             }
 
             // Gửi thông báo nếu có cảnh báo VÀ người dùng bật enableNotifications

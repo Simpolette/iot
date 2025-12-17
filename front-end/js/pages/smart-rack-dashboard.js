@@ -259,7 +259,8 @@ function updateStatusCards(data) {
   const predictCard = document.querySelector('[data-card="predict"]');
   if (predictCard) {
     const value = predictCard.querySelector('.status-value');
-    const predict = data.predict
+    const predict = data.predict;
+    console.log(predict);
     
     value.textContent = predict ? 'Có mưa' : 'Không mưa';
     
